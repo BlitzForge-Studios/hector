@@ -9,7 +9,7 @@ import { getUserBalance } from "../../shortcuts/database.js";
 export default {
     data: new SlashCommandBuilder()
         .setName("bag")
-        .setDescription("Check how many coins you have!")
+        .setDescription("How many coins do you have?")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     execute: async ({ interaction }) => {
         const userId = interaction.user.id;

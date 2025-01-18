@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 import { getLastClaimed, giveDailyReward } from "../../shortcuts/database.js";
+import { coins } from "../../shortcuts/emojis.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -20,7 +21,9 @@ export default {
             );
         } else {
             await giveDailyReward(userId);
-            await interaction.reply("You have claimed your daily reward!");
+            await interaction.reply(
+                `You have claimed ${coins} 100 coins as reward!`
+            );
         }
     },
 };
