@@ -5,7 +5,7 @@ import {
     GatewayIntentBits,
 } from "discord.js";
 import fs from "fs";
-import { TOKEN } from "./config.js";
+import { TOKEN } from "../config.js";
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds],
@@ -13,8 +13,8 @@ const client = new Client({
         status: "online",
         activities: [
             {
-                name: "What's going on?",
-                type: ActivityType.Custom,
+                name: "Dungeon Blitz: Remake #gathering",
+                type: ActivityType.Playing,
             },
         ],
     },

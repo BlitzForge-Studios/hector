@@ -7,7 +7,7 @@ import {
 import { promises as fs } from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { TOKEN } from "../../config.js";
+import { TOKEN } from "../../../config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +39,7 @@ export default async (client) => {
                 console.log(`[Commands]: Loaded ${command.data.name} command.`);
             }
         }
-        const clientId = "CLIENT_ID";
+        const clientId = "1306341490682892420";
         /* Defining the guild id
         const guildId = 'GUILD_ID';
         */
