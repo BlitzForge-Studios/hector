@@ -1,12 +1,11 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { getLastClaimed, giveDailyReward } from "../../shortcuts/database.js";
 import { coins } from "../../shortcuts/emojis.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("daily")
-        .setDescription("Claim your daily reward!")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDescription("Claim your daily reward!"),
     execute: async ({ interaction }) => {
         const userId = interaction.user.id;
         const lastClaimed = await getLastClaimed(userId);
@@ -22,7 +21,7 @@ export default {
         } else {
             await giveDailyReward(userId);
             await interaction.reply(
-                `You have claimed ${coins} 100 coins as reward!`
+                `> You have claimed ${coins} 100 coins as reward, keep it up! ☺︎`
             );
         }
     },
