@@ -21,7 +21,7 @@ export default {
         } else {
             await giveDailyReward(userId);
             await interaction.reply(
-                `> You have claimed ${coins} 100 coins as reward, keep it up! ☺︎`
+                `> You have claimed ${coins} 1000 coins as reward, keep it up! ☺︎`
             );
         }
     },

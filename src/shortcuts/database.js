@@ -27,7 +27,7 @@ export async function giveDailyReward(userId) {
     if (fs.existsSync(filePath)) {
         data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
         data.lastClaimed = now;
-        data.balance += 100;
+        data.balance += 1000;
     }
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
