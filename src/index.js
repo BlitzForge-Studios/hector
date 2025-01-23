@@ -3,18 +3,25 @@ import {
     Client,
     Collection,
     GatewayIntentBits,
+    Status,
 } from "discord.js";
 import fs from "fs";
 import { TOKEN } from "../config.js";
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMembers,
+    ],
     presence: {
-        status: "online",
+        status: Status.Idle,
         activities: [
             {
                 name: "Dungeon Blitz: Remake #gathering",
                 type: ActivityType.Playing,
+                url: "https://blitzforge-studios.github.io/dbr-demo/",
+                state: "Play demo with Discord's App Launcher.",
             },
         ],
     },
