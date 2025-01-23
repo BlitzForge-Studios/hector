@@ -80,18 +80,55 @@ export async function addExpOnMessage(
         };
     }
 
+    const previousLevel = calculateLevel(userData.exp);
     userData.exp += expToAdd;
     userData.lastExpTime = now;
+    const currentLevel = calculateLevel(userData.exp);
 
     saveUserData(userId, userData);
-    return { success: true, expAdded: expToAdd, totalExp: userData.exp };
+
+    const leveledUp = currentLevel > previousLevel;
+
+    return {
+        success: true,
+        expAdded: expToAdd,
+        totalExp: userData.exp,
+        currentLevel,
+        previousLevel,
+        leveledUp,
+    };
 }
 
 export async function handleUserMessage(
     userId,
     username,
     expPerMessage = 10,
-    cooldownTime = 30000
+    cooldownTime = 30000,
+    assignRoleFunction = null,
+    roleMap = {}
 ) {
-    return addExpOnMessage(userId, username, expPerMessage, cooldownTime);
+    const result = await addExpOnMessage(
+        userId,
+        username,
+        expPerMessage,
+        cooldownTime
+    );
+
+    if (result.success && result.leveledUp && assignRoleFunction) {
+        const roleId = roleMap[result.currentLevel];
+        if (roleId) {
+            await assignRoleFunction(userId, roleId);
+        }
+    }
+
+    return result;
+}
+
+export function calculateLevel(exp) {
+    return Math.floor(0.1 * Math.sqrt(exp));
+}
+
+export function getUserLevel(userId) {
+    const userData = getUserData(userId);
+    return calculateLevel(userData.exp);
 }

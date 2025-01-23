@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { getLastClaimed, giveDailyReward } from "../../shortcuts/database.js";
-import { coins } from "../../shortcuts/emojis.js";
+import { coins, experience } from "../../shortcuts/emojis.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -21,7 +21,7 @@ export default {
         } else {
             await giveDailyReward(userId);
             await interaction.reply(
-                `> You have claimed ${coins} 1000 coins as reward, keep it up! ☺︎`
+                `> You have claimed ${coins} 1000 coins & ${experience} 50 exp as reward, keep it up! ☺︎`
             );
         }
     },

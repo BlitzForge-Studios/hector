@@ -3,6 +3,7 @@ import {
     Client,
     Collection,
     GatewayIntentBits,
+    Status,
 } from "discord.js";
 import fs from "fs";
 import { TOKEN } from "../config.js";
@@ -10,11 +11,11 @@ import { TOKEN } from "../config.js";
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMembers,
     ],
     presence: {
-        status: "online",
+        status: Status.Idle,
         activities: [
             {
                 name: "Dungeon Blitz: Remake #gathering",

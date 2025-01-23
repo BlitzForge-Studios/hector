@@ -1,43 +1,51 @@
 import { Events } from "discord.js";
-import { getUserData, saveUserData } from "../../shortcuts/database.js";
+import { handleUserMessage } from "../../shortcuts/database.js";
 
 const COOLDOWN_TIME = 30000;
 const EXP_PER_MESSAGE = 10;
 
-function addExperience(userId, username, experiencePoints) {
-    const userData = getUserData(userId);
+const ROLE_MAP = {
+    5: "1307378199746842695",
+    10: "1307378319704199218",
+    15: "1307378351887089817",
+    20: "1307378397906997380",
+    30: "1307378436238606396",
+    40: "1307378484527501312",
+    50: "1307378534700028015",
+};
 
-    if (!userData.username || userData.username !== username) {
-        userData.username = username;
+async function assignRole(userId, roleId, guild) {
+    const member = await guild.members.fetch(userId);
+    if (member) {
+        await member.roles.add(roleId);
+        console.log(`Assigned role ${roleId} to user ${userId}`);
     }
-
-    const now = Date.now();
-    const lastExpTime = userData.lastExpTime || 0;
-    const timeSinceLastExp = now - lastExpTime;
-
-    if (timeSinceLastExp < COOLDOWN_TIME) {
-        return {
-            success: false,
-            remainingTime: COOLDOWN_TIME - timeSinceLastExp,
-        };
-    }
-
-    userData.exp += experiencePoints;
-    userData.lastExpTime = now;
-
-    saveUserData(userId, userData);
-    return { success: true };
 }
 
 export default {
     name: Events.MessageCreate,
     once: false,
     execute: async (message) => {
-        if (message.author.bot) return;
+        if (message.author.bot || !message.guild) return;
 
         const userId = message.author.id;
         const username = message.author.username;
 
-        addExperience(userId, username, EXP_PER_MESSAGE);
+        const result = await handleUserMessage(
+            userId,
+            username,
+            EXP_PER_MESSAGE,
+            COOLDOWN_TIME,
+            async (userId, roleId) => {
+                await assignRole(userId, roleId, message.guild);
+            },
+            ROLE_MAP
+        );
+
+        if (result.success && result.leveledUp) {
+            console.log(
+                `${username} has leveled up to level ${result.currentLevel}!`
+            );
+        }
     },
 };
