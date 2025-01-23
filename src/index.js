@@ -33,22 +33,38 @@ client.selectMenus = new Collection();
 client.modals = new Collection();
 client.commandArray = [];
 
-const functionFolders = fs.readdirSync("./src/functions");
+async function loadFunctions() {
+    const functionFolders = fs.readdirSync("./src/functions");
 
-for (const folder of functionFolders) {
-    const functionFiles = fs
-        .readdirSync(`./src/functions/${folder}`)
-        .filter((file) => file.endsWith(".js"));
+    for (const folder of functionFolders) {
+        const functionFiles = fs
+            .readdirSync(`./src/functions/${folder}`)
+            .filter((file) => file.endsWith(".js"));
 
-    for (const file of functionFiles) {
-        const { default: func } = await import(`./functions/${folder}/${file}`);
-
-        func(client);
+        for (const file of functionFiles) {
+            try {
+                const { default: func } = await import(
+                    `./functions/${folder}/${file}`
+                );
+                func(client);
+                console.log(`[Functions]: Loaded ${file}`);
+            } catch (error) {
+                console.error(`Error loading function ${file}:`, error);
+            }
+        }
     }
 }
 
-client.handleCommands();
-client.handleEvents();
-client.handleComponents();
+async function initializeBot() {
+    await loadFunctions();
 
-client.login(TOKEN);
+    client.handleCommands();
+    client.handleEvents();
+    client.handleComponents();
+
+    client.login(TOKEN).catch((error) => {
+        console.error("Error logging in:", error);
+    });
+}
+
+initializeBot();

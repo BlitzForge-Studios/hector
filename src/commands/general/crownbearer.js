@@ -1,7 +1,7 @@
 import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
-const roleID = "1303809293677625415"; // Crownbearer role
-const cooldown = new Map(); // To store cooldowns for users
+const roleID = "1303809293677625415";
+const cooldown = new Map();
 
 export default {
     data: new SlashCommandBuilder()
