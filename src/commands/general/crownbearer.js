@@ -1,47 +1,43 @@
-import { MessageFlags, SlashCommandBuilder } from "discord.js";
-
-const roleID = "1303809293677625415";
-const cooldown = new Map();
+import {
+    ButtonBuilder,
+    ButtonStyle,
+    SlashCommandBuilder,
+    ActionRowBuilder,
+    PermissionFlagsBits,
+    EmbedBuilder,
+} from "discord.js";
+import { balanced } from "../../shortcuts/emojis.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("crownbearer")
         .setDescription(
             "Claim a special role! Only one person can hold this role at a time."
-        ),
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     execute: async ({ interaction }) => {
-        const { user, guild } = interaction;
-        const member = await guild.members.fetch(user.id);
-        const role = guild.roles.cache.get(roleID);
+        await interaction.deferReply();
 
-        const lastUsed = cooldown.get(user.id);
-        const now = Date.now();
-        if (lastUsed && now - lastUsed < 10 * 60 * 1000) {
-            const remainingTime = Math.ceil(
-                (10 * 60 * 1000 - (now - lastUsed)) / 1000
-            );
-            return interaction.reply({
-                content: `You must wait ${remainingTime} seconds before claiming the role again.`,
-                flags: MessageFlags.Ephemeral,
-            });
-        }
+        const embed = new EmbedBuilder()
+            .setTitle("Information About Crownbearer")
+            .setDescription(
+                "Crownbearer is a role that grants you rich permissions. It ıs always obtainable with a short cooldown!\nWhat are you waiting for? Claim it now!"
+            )
+            .setColor(0xffe45d);
 
-        const currentHolder = guild.members.cache.find((member) =>
-            member.roles.cache.has(roleID)
-        );
+        const button = new ButtonBuilder()
+            .setCustomId("claimCrownbearer")
+            .setLabel("Become Crownbearer!")
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(balanced);
 
-        if (currentHolder) {
-            await currentHolder.roles.remove(role);
-        }
+        const row = new ActionRowBuilder().addComponents(button);
 
-        await member.roles.add(role);
-
-        cooldown.set(user.id, now);
-
-        return interaction.reply({
-            content: `You have successfully claimed the role!`,
-            flags: MessageFlags.Ephemeral,
+        await interaction.followUp({
+            content: "> Click the button to claim <@&1303809293677625415>!",
+            embeds: [embed],
+            components: [row],
         });
     },
 };
